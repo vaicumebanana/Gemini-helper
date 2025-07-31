@@ -1,479 +1,123 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gerador de Conteúdo AI - Gemini + Veo 3</title>
-    <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            line-height: 1.6;
-            margin: 0;
-            padding: 20px;
-            background-color: #f5f5f5;
-            color: #333;
-        }
-        
-        .container {
-            max-width: 1000px;
-            margin: 0 auto;
-            background-color: white;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
-        }
-        
-        h1 {
-            color: #4285F4;
-            text-align: center;
-            margin-bottom: 30px;
-        }
-        
-        .tabs {
-            display: flex;
-            margin-bottom: 20px;
-            border-bottom: 1px solid #ddd;
-        }
-        
-        .tab {
-            padding: 10px 20px;
-            cursor: pointer;
-            background-color: #f1f1f1;
-            border: none;
-            outline: none;
-            transition: 0.3s;
-            font-size: 16px;
-            border-radius: 5px 5px 0 0;
-            margin-right: 5px;
-        }
-        
-        .tab:hover {
-            background-color: #ddd;
-        }
-        
-        .tab.active {
-            background-color: #4285F4;
-            color: white;
-        }
-        
-        .tab-content {
-            display: none;
-            padding: 20px;
-            border: 1px solid #ddd;
-            border-top: none;
-            border-radius: 0 0 5px 5px;
-        }
-        
-        .tab-content.active {
-            display: block;
-        }
-        
-        textarea, input {
-            width: 100%;
-            padding: 10px;
-            margin-bottom: 15px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            font-size: 16px;
-        }
-        
-        button {
-            background-color: #4285F4;
-            color: white;
-            border: none;
-            padding: 12px 20px;
-            cursor: pointer;
-            border-radius: 5px;
-            font-size: 16px;
-            transition: background-color 0.3s;
-        }
-        
-        button:hover {
-            background-color: #3367D6;
-        }
-        
-        .result {
-            margin-top: 20px;
-            padding: 15px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            min-height: 100px;
-            background-color: #f9f9f9;
-        }
-        
-        .result img, .result video {
-            max-width: 100%;
-            margin-top: 10px;
-            border-radius: 5px;
-        }
-        
-        .loading {
-            display: none;
-            text-align: center;
-            margin: 20px 0;
-        }
-        
-        .spinner {
-            border: 4px solid rgba(0, 0, 0, 0.1);
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            border-left-color: #4285F4;
-            animation: spin 1s linear infinite;
-            margin: 0 auto;
-        }
-        
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        
-        .settings {
-            margin-bottom: 15px;
-            padding: 15px;
-            background-color: #f0f7ff;
-            border-radius: 5px;
-        }
-        
-        .settings label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
-        }
-        
-        .settings select {
-            padding: 8px;
-            border-radius: 5px;
-            border: 1px solid #ddd;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <title>Geração com Gemini & Veo</title>
 </head>
 <body>
-    <div class="container">
-        <h1>Gerador de Conteúdo AI - Gemini + Veo 3</h1>
-        
-        <div class="tabs">
-            <button class="tab active" onclick="openTab(event, 'text')">Texto</button>
-            <button class="tab" onclick="openTab(event, 'image')">Imagem</button>
-            <button class="tab" onclick="openTab(event, 'video')">Vídeo (Veo 3)</button>
-        </div>
-        
-        <div id="text" class="tab-content active">
-            <h2>Gerador de Texto com Gemini 1.5</h2>
-            <textarea id="text-prompt" rows="4" placeholder="Digite seu prompt para gerar texto..."></textarea>
-            <div class="settings">
-                <label for="text-style">Estilo:</label>
-                <select id="text-style">
-                    <option value="creative">Criativo</option>
-                    <option value="precise">Preciso</option>
-                    <option value="balanced">Balanceado</option>
-                </select>
-            </div>
-            <button onclick="generateText()">Gerar Texto</button>
-            
-            <div class="loading" id="text-loading">
-                <div class="spinner"></div>
-                <p>Gerando texto...</p>
-            </div>
-            
-            <div class="result" id="text-result"></div>
-        </div>
-        
-        <div id="image" class="tab-content">
-            <h2>Gerador de Imagem com Gemini</h2>
-            <textarea id="image-prompt" rows="4" placeholder="Descreva a imagem que deseja gerar..."></textarea>
-            <div class="settings">
-                <label for="image-size">Tamanho:</label>
-                <select id="image-size">
-                    <option value="1024x1024">1024x1024</option>
-                    <option value="1024x768">1024x768 (paisagem)</option>
-                    <option value="768x1024">768x1024 (retrato)</option>
-                </select>
-                
-                <label for="image-style">Estilo:</label>
-                <select id="image-style">
-                    <option value="realistic">Realista</option>
-                    <option value="artistic">Artístico</option>
-                    <option value="cartoon">Cartoon</option>
-                </select>
-            </div>
-            <button onclick="generateImage()">Gerar Imagem</button>
-            
-            <div class="loading" id="image-loading">
-                <div class="spinner"></div>
-                <p>Gerando imagem...</p>
-            </div>
-            
-            <div class="result" id="image-result"></div>
-        </div>
-        
-        <div id="video" class="tab-content">
-            <h2>Gerador de Vídeo com Veo 3</h2>
-            <textarea id="video-prompt" rows="4" placeholder="Descreva o vídeo que deseja gerar..."></textarea>
-            <div class="settings">
-                <label for="video-length">Duração:</label>
-                <select id="video-length">
-                    <option value="5">5 segundos</option>
-                    <option value="10">10 segundos</option>
-                    <option value="15">15 segundos</option>
-                    <option value="30">30 segundos</option>
-                </select>
-                
-                <label for="video-style">Estilo:</label>
-                <select id="video-style">
-                    <option value="realistic">Realista</option>
-                    <option value="cinematic">Cinematográfico</option>
-                    <option value="animated">Animação</option>
-                </select>
-            </div>
-            <button onclick="generateVideo()">Gerar Vídeo</button>
-            
-            <div class="loading" id="video-loading">
-                <div class="spinner"></div>
-                <p>Gerando vídeo...</p>
-            </div>
-            
-            <div class="result" id="video-result"></div>
-        </div>
-    </div>
+  <h1>🔮 Geração com Gemini API (Texto, Imagem, Vídeo)</h1>
 
-    <script>
-        const API_KEY = 'AIzaSyC6xzr9ZvntS7sN2yaWe35OWtSwkhu5IN8';
-        const GEMINI_API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro:generateContent';
-        const IMAGE_API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro:generateContent';
-        const VEO_API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/veo-3:generateContent';
-        
-        function openTab(evt, tabName) {
-            const tabContents = document.getElementsByClassName("tab-content");
-            for (let i = 0; i < tabContents.length; i++) {
-                tabContents[i].classList.remove("active");
-            }
-            
-            const tabs = document.getElementsByClassName("tab");
-            for (let i = 0; i < tabs.length; i++) {
-                tabs[i].classList.remove("active");
-            }
-            
-            document.getElementById(tabName).classList.add("active");
-            evt.currentTarget.classList.add("active");
-        }
-        
-        async function generateText() {
-            const prompt = document.getElementById('text-prompt').value;
-            const style = document.getElementById('text-style').value;
-            const resultDiv = document.getElementById('text-result');
-            const loadingDiv = document.getElementById('text-loading');
-            
-            if (!prompt) {
-                alert('Por favor, digite um prompt');
-                return;
-            }
-            
-            resultDiv.innerHTML = '';
-            loadingDiv.style.display = 'block';
-            
-            try {
-                // Ajustando o prompt com base no estilo selecionado
-                let fullPrompt = prompt;
-                if (style === 'creative') {
-                    fullPrompt = `Seja criativo e imaginativo. ${prompt}`;
-                } else if (style === 'precise') {
-                    fullPrompt = `Seja preciso e factual. ${prompt}`;
-                }
-                
-                const response = await fetch(`${GEMINI_API_URL}?key=${API_KEY}`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        contents: [{
-                            parts: [{
-                                text: fullPrompt
-                            }]
-                        }],
-                        generationConfig: {
-                            temperature: style === 'creative' ? 0.9 : (style === 'precise' ? 0.1 : 0.5),
-                            topP: 0.8,
-                            topK: 40
-                        }
-                    })
-                });
-                
-                const data = await response.json();
-                loadingDiv.style.display = 'none';
-                
-                if (data.candidates && data.candidates[0].content.parts[0].text) {
-                    resultDiv.innerHTML = data.candidates[0].content.parts[0].text.replace(/\n/g, '<br>');
-                } else {
-                    resultDiv.innerHTML = 'Não foi possível gerar o texto. Tente novamente.';
-                    if (data.error) {
-                        resultDiv.innerHTML += `<br><small>Erro: ${data.error.message}</small>`;
-                    }
-                }
-            } catch (error) {
-                loadingDiv.style.display = 'none';
-                resultDiv.innerHTML = 'Ocorreu um erro: ' + error.message;
-            }
-        }
-        
-        async function generateImage() {
-            const prompt = document.getElementById('image-prompt').value;
-            const size = document.getElementById('image-size').value;
-            const style = document.getElementById('image-style').value;
-            const resultDiv = document.getElementById('image-result');
-            const loadingDiv = document.getElementById('image-loading');
-            
-            if (!prompt) {
-                alert('Por favor, digite um prompt');
-                return;
-            }
-            
-            resultDiv.innerHTML = '';
-            loadingDiv.style.display = 'block';
-            
-            try {
-                // Ajustando o prompt com base no estilo e tamanho selecionados
-                let fullPrompt = `Gere uma imagem ${style} de: ${prompt}. `;
-                fullPrompt += `A imagem deve ter resolução ${size}. `;
-                
-                if (style === 'realistic') {
-                    fullPrompt += `A imagem deve ser foto-realista com alta qualidade.`;
-                } else if (style === 'artistic') {
-                    fullPrompt += `A imagem deve ter um estilo artístico, como uma pintura.`;
-                } else if (style === 'cartoon') {
-                    fullPrompt += `A imagem deve ter um estilo de desenho animado.`;
-                }
-                
-                const response = await fetch(`${IMAGE_API_URL}?key=${API_KEY}`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        contents: [{
-                            parts: [{
-                                text: fullPrompt
-                            }]
-                        }],
-                        generationConfig: {
-                            temperature: 0.5
-                        }
-                    })
-                });
-                
-                const data = await response.json();
-                loadingDiv.style.display = 'none';
-                
-                // Processando a resposta para extrair a imagem
-                if (data.candidates && data.candidates[0].content.parts[0]) {
-                    const part = data.candidates[0].content.parts[0];
-                    
-                    if (part.text) {
-                        // Se a API retornar um texto (URL ou descrição)
-                        resultDiv.innerHTML = part.text;
-                    } else if (part.inlineData && part.inlineData.mimeType === "image/png") {
-                        // Se a API retornar dados binários da imagem (caso suporte)
-                        const imageData = part.inlineData.data;
-                        resultDiv.innerHTML = `<img src="data:image/png;base64,${imageData}" alt="Imagem gerada">`;
-                    } else {
-                        // Simulação de geração de imagem (para quando a API não retornar diretamente)
-                        resultDiv.innerHTML = `
-                            <p>Imagem gerada para: "${prompt}"</p>
-                            <img src="https://source.unsplash.com/random/800x600/?${encodeURIComponent(prompt.split(' ').join(','))}" alt="Imagem simulada">
-                            <p><small>Nota: Esta é uma imagem simulada. A API Gemini pode retornar a imagem real em formato base64.</small></p>
-                        `;
-                    }
-                } else {
-                    resultDiv.innerHTML = 'Não foi possível gerar a imagem. Tente novamente.';
-                    if (data.error) {
-                        resultDiv.innerHTML += `<br><small>Erro: ${data.error.message}</small>`;
-                    }
-                }
-            } catch (error) {
-                loadingDiv.style.display = 'none';
-                resultDiv.innerHTML = 'Ocorreu um erro: ' + error.message;
-            }
-        }
-        
-        async function generateVideo() {
-            const prompt = document.getElementById('video-prompt').value;
-            const length = document.getElementById('video-length').value;
-            const style = document.getElementById('video-style').value;
-            const resultDiv = document.getElementById('video-result');
-            const loadingDiv = document.getElementById('video-loading');
-            
-            if (!prompt) {
-                alert('Por favor, digite um prompt');
-                return;
-            }
-            
-            resultDiv.innerHTML = '';
-            loadingDiv.style.display = 'block';
-            
-            try {
-                // Ajustando o prompt para o Veo 3
-                let fullPrompt = `Gere um vídeo ${length}-segundos no estilo ${style} sobre: ${prompt}. `;
-                
-                if (style === 'realistic') {
-                    fullPrompt += `O vídeo deve ser foto-realista com alta qualidade.`;
-                } else if (style === 'cinematic') {
-                    fullPrompt += `O vídeo deve ter um estilo cinematográfico com iluminação dramática.`;
-                } else if (style === 'animated') {
-                    fullPrompt += `O vídeo deve ser uma animação estilizada.`;
-                }
-                
-                // Simulação da API Veo 3 (ainda não disponível publicamente)
-                // Esta é uma implementação simulada que mostra como seria a integração
-                setTimeout(async () => {
-                    try {
-                        // Em produção real, você faria a chamada para a API Veo 3:
-                        /*
-                        const response = await fetch(`${VEO_API_URL}?key=${API_KEY}`, {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                            },
-                            body: JSON.stringify({
-                                contents: [{
-                                    parts: [{
-                                        text: fullPrompt
-                                    }]
-                                }],
-                                generationConfig: {
-                                    videoLength: parseInt(length),
-                                    style: style
-                                }
-                            })
-                        });
-                        
-                        const data = await response.json();
-                        */
-                        
-                        // Simulação da resposta
-                        loadingDiv.style.display = 'none';
-                        
-                        // Mostrando um vídeo de exemplo (simulação)
-                        resultDiv.innerHTML = `
-                            <p>Vídeo gerado para: "${prompt}" (${length}s, estilo ${style})</p>
-                            <video controls style="width: 100%; max-width: 800px;">
-                                <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyrides.mp4" type="video/mp4">
-                                Seu navegador não suporta o elemento de vídeo.
-                            </video>
-                            <p><small>Nota: Esta é uma simulação. Quando a API Veo 3 estiver disponível, o vídeo real será gerado.</small></p>
-                        `;
-                        
-                    } catch (error) {
-                        loadingDiv.style.display = 'none';
-                        resultDiv.innerHTML = 'Ocorreu um erro: ' + error.message;
-                    }
-                }, 3000);
-                
-            } catch (error) {
-                loadingDiv.style.display = 'none';
-                resultDiv.innerHTML = 'Ocorreu um erro: ' + error.message;
-            }
-        }
-    </script>
+  <label>Prompt:</label><br>
+  <textarea id="prompt" rows="3" cols="60" placeholder="Descreva o que deseja gerar..."></textarea><br><br>
+
+  <fieldset style="width: fit-content;">
+    <legend><b>🎬 Configurações de Vídeo</b></legend>
+    <label>Modelo:</label>
+    <select id="modelo-video">
+      <option value="veo-2.0-generate-001">Veo 2.0</option>
+      <option value="veo-3.0-generate-preview">Veo 3.0 Preview</option>
+    </select><br>
+
+    <label>Resolução:</label>
+    <select id="resolucao">
+      <option value="720p">720p</option>
+      <option value="1080p">1080p</option>
+    </select><br>
+
+    <label>Duração (segundos):</label>
+    <input type="number" id="duracao" value="6" min="1" max="16"><br>
+
+    <label>Aspect Ratio:</label>
+    <select id="aspect-ratio">
+      <option value="16:9">16:9</option>
+      <option value="1:1">1:1</option>
+      <option value="9:16">9:16 (vertical)</option>
+    </select><br>
+
+    <label>Áudio:</label>
+    <input type="checkbox" id="audio"><br>
+
+    <label>Negative Prompt:</label><br>
+    <input type="text" id="negative-prompt" style="width: 300px;" placeholder="Evite..."><br>
+  </fieldset><br>
+
+  <button onclick="gerarTexto()">✨ Gerar Texto</button>
+  <button onclick="gerarImagem()">🖼️ Gerar Imagem</button>
+  <button onclick="gerarVideo()">🎞️ Gerar Vídeo</button>
+
+  <h2>🔎 Resultado:</h2>
+  <pre id="out-texto"></pre>
+  <img id="out-imagem" style="max-width: 400px;"><br>
+  <video id="out-video" controls style="max-width: 400px;"></video>
+
+  <script>
+    const API_KEY = 'SUA_API_KEY';
+
+    async function fetchGemini(path, body) {
+      const resp = await fetch('https://api.gemini.google.com/v1/' + path, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + API_KEY
+        },
+        body: JSON.stringify(body)
+      });
+      if (!resp.ok) throw new Error(await resp.text());
+      return resp.json();
+    }
+
+    async function gerarTexto() {
+      const prompt = document.getElementById('prompt').value;
+      const r = await fetchGemini('text/generate', {
+        model: 'gemini-2.0-flash',
+        prompt: prompt
+      });
+      document.getElementById('out-texto').innerText = r.text;
+    }
+
+    async function gerarImagem() {
+      const prompt = document.getElementById('prompt').value;
+      const r = await fetchGemini('image/generate', {
+        model: 'gemini-2.0-flash',
+        prompt: prompt,
+        n: 1,
+        size: '1024x1024'
+      });
+      document.getElementById('out-imagem').src = r.images[0].url;
+    }
+
+    async function gerarVideo() {
+      const prompt = document.getElementById('prompt').value;
+      const modelo = document.getElementById('modelo-video').value;
+      const resolucao = document.getElementById('resolucao').value;
+      const duracao = parseInt(document.getElementById('duracao').value);
+      const aspect = document.getElementById('aspect-ratio').value;
+      const audio = document.getElementById('audio').checked;
+      const neg = document.getElementById('negative-prompt').value;
+
+      const body = {
+        model: modelo,
+        prompt: prompt,
+        durationSeconds: duracao,
+        aspectRatio: aspect,
+        resolution: resolucao,
+        generateAudio: audio,
+        negativePrompt: neg,
+        enhancePrompt: true,
+        personGeneration: 'allow_all'
+      };
+
+      const op = await fetchGemini('video/generate', body);
+      const name = op.name;
+
+      let status = await fetchGemini('operations/' + encodeURIComponent(name), {});
+      while (!status.done) {
+        await new Promise(r => setTimeout(r, 10000));
+        status = await fetchGemini('operations/' + encodeURIComponent(name), {});
+      }
+      const url = status.response.generatedVideos[0].video;
+      document.getElementById('out-video').src = url;
+    }
+  </script>
 </body>
 </html>
